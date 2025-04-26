@@ -14,20 +14,29 @@ interface ViewsProps {
     layout?: LayoutType
 }
 
-type AllRoutesProps = ViewsProps
-
 const { authenticatedEntryPath } = appConfig
 
-const AllRoutes = (props: AllRoutesProps) => {
+const AllRoutes = (props: ViewsProps) => {
     const { user } = useAuth()
 
     return (
         <Routes>
+            <Route path="/" element={<PublicRoute />}>
+                {publicRoutes.map((route) => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={
+                            <AppRoute
+                                routeKey={route.key}
+                                component={route.component}
+                                {...route.meta}
+                            />
+                        }
+                    />
+                ))}
+            </Route>
             <Route path="/" element={<ProtectedRoute />}>
-                <Route
-                    path="/"
-                    element={<Navigate replace to={authenticatedEntryPath} />}
-                />
                 {protectedRoutes.map((route, index) => (
                     <Route
                         key={route.key + index}
@@ -49,21 +58,6 @@ const AllRoutes = (props: AllRoutesProps) => {
                     />
                 ))}
                 <Route path="*" element={<Navigate replace to="/" />} />
-            </Route>
-            <Route path="/" element={<PublicRoute />}>
-                {publicRoutes.map((route) => (
-                    <Route
-                        key={route.path}
-                        path={route.path}
-                        element={
-                            <AppRoute
-                                routeKey={route.key}
-                                component={route.component}
-                                {...route.meta}
-                            />
-                        }
-                    />
-                ))}
             </Route>
         </Routes>
     )

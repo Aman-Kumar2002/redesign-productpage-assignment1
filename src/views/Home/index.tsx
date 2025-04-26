@@ -5,17 +5,20 @@ import ContactForm from './components/ContactForm';
 import MainFooter from './components/MainFooter';
 import InfoSection from './components/InfoSection';
 import FeaturesGrid from './components/FeaturesGrid';
+import type { Meta } from '@/@types/routes';
 
-const Home: React.FC = () => {
-	const contactRef = useRef(null);
-	const aboutRef = useRef(null);
-	const FqRef = useRef(null);
-	const scrollToSection = (ref) => {
-		ref.current.scrollIntoView({ behavior: 'smooth' });
+interface HomeProps extends Meta {}
+
+const Home: React.FC<HomeProps> = () => {
+	const contactRef = useRef<HTMLDivElement>(null);
+	const aboutRef = useRef<HTMLDivElement>(null);
+	const FqRef = useRef<HTMLDivElement>(null);
+	const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+		ref.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
 	useEffect(() => {
-		let lastScrollTop = 0; // Initialize lastScrollTop variable
+		let lastScrollTop = 0;
 
 		const handleScroll = () => {
 			const hcf = document.querySelector(".hcf-profile");
@@ -35,46 +38,37 @@ const Home: React.FC = () => {
 			lastScrollTop = scrollTop;
 		};
 
-
-		// Add scroll event listener
 		window.addEventListener("scroll", handleScroll);
 
-		// Cleanup the event listener on unmount
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
 		};
 	}, []);
+
 	return (
-		<>
-			<div>
-				<div className="">
-					<HeroSection
-						scrollToSection={scrollToSection}
-						featuresRef={FqRef}
-						contactRef={contactRef}
-						aboutRef={aboutRef}
-					/>
-					{/* <div className='bg-white'>
-						<ClaimLandingSection />
-					</div> */}
-					<div className='!bg-[#eff6ff] relative'>
-						<FeaturesGrid />
-					</div>
-					<div className='!bg-white relative' ref={aboutRef}>
-						<InfoSection />
-					</div>
-					<div className='relative bg-white' ref={FqRef}>
-						<HomeFAQs />
-					</div>
-					<div className='bg-white relative' ref={contactRef}>
-						<ContactForm />
-					</div>
-					{/* <div className='bg-white'>
-						<MainFooter />
-					</div> */}
-				</div>
+		<div className="min-h-screen w-full">
+			<HeroSection
+				scrollToSection={scrollToSection}
+				featuresRef={FqRef}
+				contactRef={contactRef}
+				aboutRef={aboutRef}
+			/>
+			<div className='bg-white'>
+				<FeaturesGrid />
 			</div>
-		</>
+			<div className='bg-white' ref={aboutRef}>
+				<InfoSection />
+			</div>
+			<div className='bg-white' ref={FqRef}>
+				<HomeFAQs />
+			</div>
+			<div className='bg-white' ref={contactRef}>
+				<ContactForm />
+			</div>
+			<div className='bg-white'>
+				<MainFooter />
+			</div>
+		</div>
 	);
 };
 
